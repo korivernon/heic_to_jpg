@@ -1,6 +1,7 @@
 import Tkinter as tk
 import os
 import converter
+import shutil
 
 master = tk.Tk()
 tk.Label(master, text="Location to File").grid(row=0)
@@ -26,10 +27,12 @@ def get_source_folder(location):
     '''
     # IMG
     sourceFolder = None
-    if not os.path.isdir(location):
+    if location.find(".") != -1:
         #in the event that this is not a directory
+        print("\thandling individual file")
         sourceFolder = os.getcwd()
-    elif os.path.isdir(location):
+    else:
+        print("\thandling directory")
         sourceFolder = location
     return sourceFolder
 
@@ -61,22 +64,31 @@ def call_converter(location, length = 640, width = 480):
     if img == ".":
         files = [f for f in os.listdir(sourceFolder) if f.endswith(".HEIC")]
         for fil in files:
+            os.chdir(location)
             converter.open_image(fil, length, width, sourceFolder)
 
 
+def main():
+    try:
+        os.mkdir("res")
+    except:
+        shutil.rmtree("res")
+        os.mkdir("res")
+    tk.Button(master, 
+            text='Quit', 
+            command=master.quit).grid(row=4, 
+                                        column=0, 
+                                        sticky=tk.W, 
+                                        pady=4)
+    tk.Button(master, 
+            text='Convert', command=show_entry_fields).grid(row=4, 
+                                                        column=1, 
+                                                        sticky=tk.W, 
+                                                        pady=4)
+    master.title("HEIC to JPG Converter")
+    tk.mainloop()
 
-tk.Button(master, 
-          text='Quit', 
-          command=master.quit).grid(row=4, 
-                                    column=0, 
-                                    sticky=tk.W, 
-                                    pady=4)
-tk.Button(master, 
-          text='Show', command=show_entry_fields).grid(row=4, 
-                                                       column=1, 
-                                                       sticky=tk.W, 
-                                                       pady=4)
-master.title("HEIC to JPG Converter")
-tk.mainloop()
+    master.mainloop()
 
-master.mainloop()
+if __name__ == "__main__":
+    main()
