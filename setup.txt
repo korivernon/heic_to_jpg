@@ -1,0 +1,4 @@
+Dependencies:
+    pip install wand
+    pip install pillow
+    pip install Imagee
